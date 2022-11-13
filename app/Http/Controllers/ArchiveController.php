@@ -10,7 +10,7 @@ class ArchiveController extends Controller
 {
     public function index() {
         $notes = NoteModel::all()->where("is_archived",true);
-        return Inertia::render("Archive",[
+        return Inertia::render("Archive",[  
             "notes" => [...$notes]
         ]);
     }

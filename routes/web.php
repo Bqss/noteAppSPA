@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NoteController;
-// use App\Http\Controllers\PageController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
+
 
 
 /*
@@ -18,20 +19,25 @@ use Inertia\Inertia;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-Route::get("/",[NoteController::class , "index"])->name("dashboard");
-Route::get("/register", function () {
-    return Inertia::render("Register");
+Route::middleware(['guest'])->group(function() {
+    Route::get("/register", fn () => inertia("Register"));
+    Route::post("/register", [UserController::class, "store"]);
+    Route::get("/login", fn () => inertia("Login"));
+    Route::post("/login", [AuthController::class, "login"]);
 });
-// Route::get('/', function () {
-//     return Inertia::render('Dashboard');
-// });
-Route::get('/archive', [ArchiveController::class ,"index"]);
 
-Route::post("/",[NoteController::class ,"store"]);
-Route::delete("/delete/{id}",[NoteController::class,"delete"]);
-Route::put("/archive",[NoteController::class,"archive"]);
+
+Route::middleware("auth") -> group(function () {
+    Route::get("/", [NoteController::class, "index"]);
+    Route::get('/archive', [ArchiveController::class, "index"]);
+    Route::post("/", [NoteController::class, "store"]);
+    Route::delete("/delete/{id}", [NoteController::class, "delete"]);
+    Route::put("/archive", [NoteController::class, "archive"]);
+    Route::get("/logout" , [AuthController::class ,"logout"]);
+    Route::put("/unarchive" , [NoteController::class , "unarchive"]);
+    Route::get("/detail" , [NoteController::class , "detail"]);
+});
+    
 
 
 

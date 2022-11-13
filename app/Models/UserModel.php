@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserModel extends Model
+class UserModel extends Model 
 {
     use HasFactory;
     protected $table ="user";
@@ -13,12 +14,10 @@ class UserModel extends Model
     public $incrementing = true;
     protected $timestamp = true;
 
-    // protected $fillable = [
-    //     "username", 
-    //     "password",
-    //     "email",
-    //     "remember_token"
-
-    // ]
+    protected $fillable = [
+        "username", 
+        "password",
+        "email"
+    ];
 
 }

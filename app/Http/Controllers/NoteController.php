@@ -13,7 +13,7 @@ class NoteController extends Controller
     public function index(){
         $notes = NoteModel::all()->where("is_archived",false);
         return Inertia::render("Dashboard", [
-            "notes" => [...$notes]
+            "notes" => [...$notes] 
         ]);
     }
     public function store(Request $request){
@@ -57,10 +57,28 @@ class NoteController extends Controller
         NoteModel::where("id",$id) ->  update([
             "is_archived" => true
         ]);
-
         return redirect("/")->with("status", [
             "code" => 201,
             "msg" => "Note successfully archived"
+        ]);
+    }
+
+    public function unarchive(Request $request){
+        $id = $request -> query("id");
+        NoteModel::where("id", $id)->update([
+            "is_archived" => false
+        ]);
+        return redirect("/archive")->with("status", [
+            "code" => 201,
+            "msg" => "Note successfully unarchived"
+        ]);
+    }
+
+    public function detail (Request $request){
+        $id = $request -> query("id");
+        $note = NoteModel::where("id",$id) ->first();
+        return inertia("Detail", [
+            "note" => $note
         ]);
 
     }

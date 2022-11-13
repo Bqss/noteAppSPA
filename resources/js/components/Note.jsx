@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "@inertiajs/inertia-react";
 import { Inertia } from "@inertiajs/inertia";
 
-function Note({ cdata }) {
+function Note({ cdata , version }) {
     const { note_title, created_at, note_text , id } = cdata;
 
     const deleteNote = (e) => {
@@ -13,6 +13,16 @@ function Note({ cdata }) {
     const archiveNote = (e) => {
         e.preventDefault();
         Inertia.put(`/archive?id=${id}`);
+    }
+
+    const unarchive = (ev) => {
+        ev.preventDefault();
+        Inertia.put(`/unarchive?id=${id}`)
+    }
+
+    const detailNote = (ev) =>{
+        ev.preventDefault();
+        Inertia.get(`/detail?id=${id}`)
     }
 
     return (
@@ -30,8 +40,8 @@ function Note({ cdata }) {
             </div>
 
             <div className="mt-6 flex gap-2">
-                <form onSubmit={deleteNote}  className="relative">
-                    <input type="hidden" name="_method" value="DELETE"/>
+                <form onSubmit={deleteNote} className="relative">
+                    <input type="hidden" name="_method" value="DELETE" />
                     <button
                         type="submit"
                         className="p-2 rounded-md bg-btn-delete-light dark:bg-btn-delete-dark   peer  "
@@ -56,8 +66,10 @@ function Note({ cdata }) {
                     </span>
                 </form>
 
-                <form onSubmit={archiveNote} className="relative">
-
+                <form
+                    onSubmit={version === 1 ? archiveNote : unarchive}
+                    className="relative"
+                >
                     <input type="hidden" name="_method" value="PUT" />
                     <button
                         type="submit"
@@ -69,22 +81,29 @@ function Note({ cdata }) {
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
                             className=" stroke-green-500 dark:stroke-green-200 w-5 h-5"
-                        >
+                        >{ version == 1 ?
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
                             />
+                            :
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
+                                />}
                         </svg>
                     </button>
                     <span className="bg-black w-max py-1 px-2 rounded-md text-sm text-text-dark invisible transition duration-300 opacity-0 absolute  peer-hover:visible peer-hover:opacity-100 -top-10 left-1/2 -translate-x-1/2 ">
-                        Archive Note
+                        {version === 1 ? "Archive Note" : "Unarchive Note"}
                     </span>
                 </form>
 
                 <Link href="#" className="relative">
                     <button
                         type="submit"
+                        onClick={detailNote}
                         className="p-2 rounded-md bg-btn-detail-light dark:bg-btn-detail-dark peer"
                     >
                         <svg

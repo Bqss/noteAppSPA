@@ -1,114 +1,133 @@
-import React from "react";
+import React , {useState } from "react";
 import PageLayout from "@/layout/PageLayout";
 import { Head, Link } from "@inertiajs/inertia-react";
-import Toast from "@/components/Toast";
-import { isEmpty } from "lodash";
+import { Inertia } from "@inertiajs/inertia";
+import Input from "@/components/Input";
 
 
-function Register({errors , status}) {
+function Register({errors}) {
+
+    const [payload, setpayload] = useState({
+        username : "",
+        email : "",
+        password : "",
+        password_confirm : ""
+    });
+
+    const handleChange = ({target}) => {
+        setpayload(old => ({
+            ...old,
+            [target.name] : target.value
+        }))
+    }
+    const storeUser = (e) => { 
+        e.preventDefault();
+        Inertia.post("/register",payload);
+    }
+
     return (
         <PageLayout>
             <Head title="Register"></Head>
-            {
-                !isEmpty(status) && (
-                    
-                ) 
-            }
-
-            <div class=" p-10 flex flex-col md:flex-row md:items-center  bg-secondary-light mx-auto dark:bg-secondary-dark rounded-lg mt-7">
-                <div class=" hidden md:block w-7/12">
+            <div className=" p-10 flex flex-col md:flex-row md:items-center  bg-secondary-light mx-auto dark:bg-secondary-dark rounded-lg mt-7">
+                <div className=" hidden md:block w-7/12">
                     <img
                         src="/images/loginil.webp"
-                        class="-ml-12 rounded-md"
+                        className="-ml-12 rounded-md"
                         alt="login-ilustration"
                     />
                 </div>
-                <div class="text-light dark:text-text-dark w-5/12">
-                    <h1 class="mb-1">Let's Get Started</h1>
+                <div className="text-light dark:text-text-dark w-5/12">
+                    <h1 className="mb-1">Let's Get Started</h1>
                     <p>Register now and enjoy write your notes</p>
 
-                    <form action="/register" class="mt-6" method="POST">
-                     
-                        <div class="flex flex-col">
+                    <form onSubmit={storeUser} className="mt-6">
+                        <div className="flex flex-col">
                             <label
-                                for="username"
-                                class="text-sm text-gray-600 dark:text-gray-300 mb-1"
+                                htmlFor="username"
+                                className="text-sm text-gray-600 dark:text-gray-300 mb-1"
                             >
                                 Username
                             </label>
-                            <input
+
+                            <Input
                                 type="text"
                                 name="username"
                                 id="username"
-                                value=""
-                                class="rounded-md bg-transparent px-4 py-2  text-text-light text-sm dark:text-gray-300 border transition-colors ring-2 ring-transparent duration-300 outline-none  border-gray-500  @error('username') border-red-500 dark:border-red-500 focus:ring-red-300/40 focus:border-red-500 @enderror focus:border-blue-400 focus:ring-blue-300/40"
+                                validation={errors.username}
+                                onChange={handleChange}
+                                value={payload.username}
                                 placeholder="Enter your username"
-                                autocomplete="username"
+                                autoComplete="username"
                             />
 
-                            {/* <small class="text-xs mt-1 text-red-500">{{ $errors->first('username') }}</small> */}
+                            {/* <small className="text-xs mt-1 text-red-500">{{ $errors->first('username') }}</small> */}
                         </div>
-                        <div class="flex flex-col mt-2">
+                        <div className="flex flex-col mt-2">
                             <label
-                                for="email"
-                                class="text-sm text-gray-600 dark:text-gray-300 mb-1"
+                                htmlFor="email"
+                                className="text-sm text-gray-600 dark:text-gray-300 mb-1"
                             >
                                 Email
                             </label>
-                            <input
+                            <Input
                                 type="email"
                                 name="email"
                                 id="email"
-                                value=""
-                                class="rounded-md bg-transparent px-4 py-2  text-text-light text-sm dark:text-gray-300 border transition-colors ring-2 ring-transparent duration-300 outline-none  border-gray-500  @error('email') border-red-500 dark:border-red-500 focus:ring-red-300/40 focus:border-red-500 @enderror focus:border-blue-400 focus:ring-blue-300/40"
-                                autocomplete="email"
+                                onChange={handleChange}
+                                value={payload.email}
+                                validation={errors.email}
+                                autoComplete="email"
                                 placeholder="Enter your email"
                             />
-                            {/* <small class="text-xs mt-1 text-red-500">{{ $errors->first('email') }}</small> */}
+                            {/* <small className="text-xs mt-1 text-red-500">{{ $errors->first('email') }}</small> */}
                         </div>
-                        <div class="flex flex-col mt-2">
+                        <div className="flex flex-col mt-2">
                             <label
-                                for="password"
-                                class="text-sm text-gray-600 dark:text-gray-300 mb-1"
+                                htmlFor="password"
+                                className="text-sm text-gray-600 dark:text-gray-300 mb-1"
                             >
                                 Password
                             </label>
-                            <input
+                            <Input
                                 type="password"
                                 name="password"
                                 id="password"
-                                class="rounded-md bg-transparent px-4 py-2  text-text-light text-sm dark:text-gray-300 border transition-colors ring-2 ring-transparent duration-300 outline-none  border-gray-500  @error('password') border-red-500 dark:border-red-500 focus:ring-red-300/40 focus:border-red-500 @enderror focus:border-blue-400 focus:ring-blue-300/40"
+                                onChange={handleChange}
+                                value={payload.password}
+                                validation={errors.password}
                                 placeholder="Enter your password"
-                                autocomplete="new-password"
+                                autoComplete="new-password"
                             />
-                            {/* <small class="text-xs mt-1 text-red-500">{{ $errors->first('password') }}</small> */}
+                            {/* <small className="text-xs mt-1 text-red-500">{{ $errors->first('password') }}</small> */}
                         </div>
-                        <div class="flex flex-col mt-2">
+                        <div className="flex flex-col mt-2">
                             <label
-                                for="pass_confirm"
-                                class="text-sm text-gray-600 dark:text-gray-300 mb-1 "
+                                htmlFor="pass_confirm"
+                                className="text-sm text-gray-600 dark:text-gray-300 mb-1 "
                             >
                                 Password Confirmation
                             </label>
-                            <input
+                            <Input
                                 type="password"
-                                name="pass_confirm"
+                                name="password_confirm"
+                                value={payload.password_confirm}
+                                onChange={handleChange}
                                 id="confirm_password"
-                                class="rounded-md bg-transparent px-4 py-2  text-text-light text-sm dark:text-gray-300 border transition-colors ring-2 ring-transparent duration-300 outline-none  border-gray-500  @error('pass_confirm') border-red-500 dark:border-red-500 focus:ring-red-300/40 focus:border-red-500 @enderror focus:border-blue-400 focus:ring-blue-300/40"
-                                autocomplete="current-password"
+                                validation={errors.password_confirm}
+                                autoComplete="current-password"
                                 placeholder="Enter your confirm password"
                             />
-                            {/* <small class="text-xs mt-1 text-red-500">{{ $errors->first('pass_confirm') }}</small> */}
+                            {/* <small className="text-xs mt-1 text-red-500">{{ $errors->first('pass_confirm') }}</small> */}
                         </div>
                         <input
                             role="button"
                             type="submit"
-                            class="w-full bg-blue-600 py-2 block mt-6 font-medium text-text-dark  rounded-md hover:bg-blue-700 "
+                            className="w-full bg-blue-600 py-2 block mt-6 font-medium text-text-dark  rounded-md hover:bg-blue-700 "
                             value="Register"
                         />
-                        <p class="text-sm text-black dark:text-white mt-2">
+                        <p className="text-sm text-black dark:text-white mt-2">
                             Have account ?, click{" "}
-                            <Link href="/login" class="text-blue-400">
+                            <Link href="/login" className="text-blue-400">
                                 here{" "}
                             </Link>
                             to Login

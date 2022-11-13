@@ -1,18 +1,26 @@
 import { Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { useEffect } from "react";
+import { useEffect , useState } from "react";
 const Toast = ({
-    type = 0,
-    children,
+    title,
     msg,
-    isShow,
     onClose,
+    show,
+    className,
+    autoClose = 0 ,
+    children
+ 
 }) => {
-    const style = ["bg-red-500", "bg-yellow-500", "bg-green-500"];
-    const title = ["Error" , "Warning" , "Success"]
+
+    
+    useEffect(() => {
+        autoClose > 0 && show &&
+        setTimeout(onClose, autoClose );
+    }, [show])
+    
     const baseStyle ="w-11/12 max-w-sm shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden";
     return (
-        <Transition show={isShow}>
+        <Transition show={show}>
             <div
                 aria-live="assertive"
                 className="fixed inset-0  flex items-start z-20 px-4 py-6 pointer-events-none sm:p-6 sm:items-start"
@@ -27,14 +35,18 @@ const Toast = ({
                         leaveTo="opacity-0 translate-x-full"
                         as={Fragment}
                     >
-                        <div className={style[type] + " " + baseStyle}>
+                        <div
+                            className={ className + " " + baseStyle}
+                        >
                             <div className="p-4">
                                 <div className="flex items-center">
-                                    <div className="flex-shrink-0">{children}</div>
+                                    <div className="flex-shrink-0">
+                                        {children}
+                                    </div>
                                     <div className="flex w-full items-center">
                                         <div className="ml-3  flex-1 pt-0.5">
                                             <p className="text-base font-medium text-black dark:text-white">
-                                                {title[type ]}
+                                                {title}
                                             </p>
                                             <p className="mt-1 text-sm text-black dark:text-white ">
                                                 {msg}
